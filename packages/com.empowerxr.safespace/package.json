@@ -1,0 +1,16 @@
+{
+  "name": "com.empowerxr.safespace",
+  "version": "0.1.0",
+  "displayName": "EmpowerXR Safe Space SDK",
+  "description": "Safe Space SDK for EmpowerXR: sensory regulation, telemetry, and intervention tooling for XR experiences.",
+  "unity": "2021.3",
+  "keywords": [
+    "xr",
+    "accessibility",
+    "sensory",
+    "empowerxr"
+  ],
+  "author": {
+    "name": "EmpowerXR"
+  }
+}
