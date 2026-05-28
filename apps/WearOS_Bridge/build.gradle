@@ -1,0 +1,65 @@
+// App/module-level build configuration for the WearOS_Bridge Wear OS application.
+// This directory is configured as the single (root) Gradle module, so this file
+// holds the application plugin, Android config, and dependencies.
+plugins {
+    id 'com.android.application' version '8.5.2'
+    id 'org.jetbrains.kotlin.android' version '1.9.24'
+}
+
+android {
+    namespace 'com.empowerxr.wearosbridge'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.empowerxr.wearosbridge"
+        minSdk 30          // Wear OS 3 (API 30) and above
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.14'   // matches Kotlin 1.9.24
+    }
+}
+
+dependencies {
+    // Compose BOM keeps Compose artifact versions aligned.
+    implementation platform('androidx.compose:compose-bom:2024.06.00')
+
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.activity:activity-compose:1.9.0'
+
+    // Compose core
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+
+    // Wear OS Compose
+    implementation 'androidx.wear.compose:compose-material:1.3.1'
+    implementation 'androidx.wear.compose:compose-foundation:1.3.1'
+
+    // Coroutines for the background UDP broadcaster
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+}
