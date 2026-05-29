@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 private const val TAG = "WearUdpBridge"
-private const val BROADCAST_ADDRESS = "255.255.255.255"
+private const val BROADCAST_ADDRESS = "10.0.2.2"
 private const val BROADCAST_PORT = 5000
 private const val BROADCAST_INTERVAL_MS = 500L
 
