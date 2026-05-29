@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.google.xr.extensions": "https://github.com/android/android-xr-unity-package.git",
     "com.unity.ai.navigation": "2.0.11",
     "com.unity.collab-proxy": "2.11.4",
     "com.unity.ide.rider": "3.0.39",
