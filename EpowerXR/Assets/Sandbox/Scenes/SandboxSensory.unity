@@ -1569,7 +1569,7 @@ MonoBehaviour:
   warningUI: {fileID: 370372159}
   warningLeadTime: 5
   chamber1Duration: 15
-  chamber2Duration: 30
+  chamber2Duration: 20
   chamber3Duration: 20
   arcFlashWarning: Prepare for sudden high-contrast visuals and rapid movement.
   echoChamberWarning: Prepare for spatial audio overload and claustrophobia.
