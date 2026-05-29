@@ -1,0 +1,152 @@
+/* ── Per-state colour tokens ──────────────────────────────────────────────── */
+.sdk-state--baseline     { --c: #4ade80; }
+.sdk-state--elevated     { --c: #facc15; }
+.sdk-state--alert        { --c: #fb923c; }
+.sdk-state--intervention { --c: #ef4444; }
+
+/* ── Shell ────────────────────────────────────────────────────────────────── */
+.sdk-state {
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--c) 35%, var(--border));
+  overflow: hidden;
+  transition: border-color 0.5s ease;
+}
+
+.sdk-state--intervention {
+  animation: intervention-pulse 2s ease-in-out infinite;
+}
+
+@keyframes intervention-pulse {
+  0%, 100% { border-color: color-mix(in srgb, #ef4444 35%, var(--border)); }
+  50%       { border-color: #ef4444; box-shadow: 0 0 16px rgba(239, 68, 68, 0.25); }
+}
+
+/* ── Main row ─────────────────────────────────────────────────────────────── */
+.sdk-state__main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--c) 6%, #0a0a0a);
+  border-left: 3px solid var(--c);
+  transition: background 0.5s ease, border-color 0.5s ease;
+}
+
+/* ── State identity (left) ────────────────────────────────────────────────── */
+.sdk-state__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sdk-state__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--c);
+}
+
+.sdk-state__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  flex-shrink: 0;
+}
+
+.sdk-state--intervention .sdk-state__dot {
+  animation: dot-blink 1s ease-in-out infinite;
+}
+
+@keyframes dot-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.sdk-state__label-de {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.sdk-state__description {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.sdk-state__desc-de {
+  color: var(--text-muted);
+}
+
+/* ── SDK Response (right) ─────────────────────────────────────────────────── */
+.sdk-state__response {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.sdk-state__response-heading {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.sdk-state__response-value {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--c);
+  line-height: 1.5;
+}
+
+.sdk-state__response-de {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* ── Trigger strip ────────────────────────────────────────────────────────── */
+.sdk-state__triggers {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #080808;
+  border-top: 1px solid var(--border);
+}
+
+.sdk-state__triggers-label {
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.sdk-state__trigger {
+  font-size: 0.58rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: transparent;
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  white-space: nowrap;
+}
+
+.sdk-state__trigger--on {
+  color: var(--c);
+  border-color: color-mix(in srgb, var(--c) 50%, transparent);
+  background: color-mix(in srgb, var(--c) 10%, transparent);
+}
