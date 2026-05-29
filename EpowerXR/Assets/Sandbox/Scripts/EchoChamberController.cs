@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class EchoChamberController : MonoBehaviour
 {
+    [System.Serializable]
+    public class MovingWall
+    {
+        public Transform wall;
+        public Vector3 targetPosition;   // Im Inspector als Weltposition eintragen
+        [HideInInspector] public Vector3 startPosition;
+    }
+
     [Header("Wall Closing")]
-    public Transform[] movingWalls;         // Linke, rechte, vordere, hintere Wand
-    public float[] wallTargetPositions;     // Ziel-X oder Z je Wand
-    public float wallSpeed = 0.3f;
+    public MovingWall[] movingWalls;
+    public float closeDuration = 20f;
 
     [Header("Audio")]
-    public AudioClip[] harshSounds;         // Alarm, Verkehr, Dissonanz
+    public AudioClip[] harshSounds;
     public int audioSourceCount = 5;
     public float maxVolume = 1.0f;
     public float volumeRampDuration = 20f;
@@ -22,10 +29,16 @@ public class EchoChamberController : MonoBehaviour
     {
         gameObject.SetActive(true);
         isActive = true;
+
+        // Startpositionen einmalig merken
+        foreach (var w in movingWalls)
+            w.startPosition = w.wall.position;
+
         SpawnAudioSources();
         StartCoroutine(CloseWalls());
         StartCoroutine(RampVolume());
     }
+
 
     void SpawnAudioSources()
     {
@@ -33,12 +46,11 @@ public class EchoChamberController : MonoBehaviour
         {
             var go = new GameObject($"AudioSource_{i}");
             go.transform.SetParent(transform);
-            // Zufällige Position um den Spieler (Radius 1-3m)
             go.transform.localPosition = Random.insideUnitSphere * 2.5f;
             var src = go.AddComponent<AudioSource>();
             src.clip = harshSounds[i % harshSounds.Length];
             src.loop = true;
-            src.spatialBlend = 1f;           // Voller 3D-Sound
+            src.spatialBlend = 1f;
             src.volume = 0f;
             src.Play();
             audioSources.Add(src);
@@ -47,23 +59,23 @@ public class EchoChamberController : MonoBehaviour
 
     IEnumerator CloseWalls()
     {
-        // Wände bewegen sich über die gesamte Laufzeit
         float elapsed = 0;
-        Vector3[] startPositions = System.Array.ConvertAll(movingWalls, w => w.position);
 
-        while (elapsed < volumeRampDuration && isActive)
+        while (elapsed < closeDuration && isActive)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / volumeRampDuration;
-            for (int i = 0; i < movingWalls.Length; i++)
-            {
-                var pos = movingWalls[i].position;
-                // Nur die relevante Achse bewegen (X oder Z je Wand)
-                pos.x = Mathf.Lerp(startPositions[i].x, wallTargetPositions[i], t);
-                movingWalls[i].position = pos;
-            }
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / closeDuration);
+
+            foreach (var w in movingWalls)
+                w.wall.position = Vector3.Lerp(w.startPosition, w.targetPosition, t);
+
             yield return null;
         }
+
+        // Sicherstellen dass alle exakt am Ziel ankommen
+        if (isActive)
+            foreach (var w in movingWalls)
+                w.wall.position = w.targetPosition;
     }
 
     IEnumerator RampVolume()
@@ -78,11 +90,27 @@ public class EchoChamberController : MonoBehaviour
         }
     }
 
+
+
     public void Deactivate()
     {
         isActive = false;
-        foreach (var src in audioSources) Destroy(src.gameObject);
-        audioSources.Clear();
-        gameObject.SetActive(false);
+        // Nichts zerstören, nichts zurücksetzen
+        // Experiment ist vorbei — Zustand eingefroren
     }
+
+
+    //public void Deactivate()
+    //{
+    //    isActive = false;
+
+    //    // Wände zurücksetzen
+    //    foreach (var w in movingWalls)
+    //        if (w.wall != null) w.wall.position = w.startPosition;
+
+    //    foreach (var src in audioSources) Destroy(src.gameObject);
+    //    audioSources.Clear();
+    //    gameObject.SetActive(false);
+    //}
+
 }

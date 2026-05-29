@@ -8,9 +8,7 @@ public class BaselineController : MonoBehaviour
     public void Activate()
     {
         gameObject.SetActive(true);
-        roomLight.color = softGray;
-        roomLight.intensity = 1.2f;
-        RenderSettings.ambientLight = softGray;
+        RenderSettings.ambientIntensity = 1.8f;
     }
 
     public void Deactivate() => gameObject.SetActive(false);

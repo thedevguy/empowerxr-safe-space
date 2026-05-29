@@ -1,10 +1,10 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SandboxManager : MonoBehaviour
 {
     public enum ChamberState { Baseline, ArcFlash, EchoChamber, Done }
+    public ChamberState currentState;
 
     [Header("References")]
     public BaselineController chamber1;
@@ -12,32 +12,41 @@ public class SandboxManager : MonoBehaviour
     public EchoChamberController chamber3;
     public WarningUI warningUI;
 
-    private ChamberState currentState;
+    [Header("Timing")]
+    public float warningLeadTime = 5f;   // Wie viele Sekunden vor Ende die Warning erscheint
+    public float chamber1Duration = 5f;
+    public float chamber2Duration = 5f;
+    public float chamber3Duration = 5f;
 
-    void Start() => StartCoroutine(RunExperiment());
+    [Header("Warning Messages")]
+    public string arcFlashWarning = "Prepare for sudden high-contrast visuals and rapid movement.";
+    public string echoChamberWarning = "Prepare for spatial audio overload and claustrophobia.";
 
-    IEnumerator RunExperiment()
+
+
+    void Start() => StartCoroutine(RunScene());
+
+    IEnumerator RunScene()
     {
-        // Chamber 1
+        // Chamber 1 – Baseline
         currentState = ChamberState.Baseline;
         chamber1.Activate();
-        yield return new WaitForSeconds(15f);
-        chamber1.Deactivate();
+        yield return new WaitForSeconds(chamber1Duration - warningLeadTime);
+        StartCoroutine(warningUI.ShowWarning(arcFlashWarning, warningLeadTime));
+        yield return new WaitForSeconds(warningLeadTime);
 
-        // Chamber 2
-        yield return warningUI.ShowWarning("Prepare for sudden high-contrast visuals and rapid movement.", 5f);
+        // Chamber 2 – Arc Flash
         currentState = ChamberState.ArcFlash;
         chamber2.Activate();
-        yield return new WaitForSeconds(30f);
-        chamber2.Deactivate();
+        yield return new WaitForSeconds(chamber2Duration - warningLeadTime);
+        StartCoroutine(warningUI.ShowWarning(echoChamberWarning, warningLeadTime));
+        yield return new WaitForSeconds(warningLeadTime);
 
-        // Chamber 3
-        yield return warningUI.ShowWarning("Prepare for spatial audio overload and claustrophobia.", 5f);
+        // Chamber 3 – Echo Chamber (kein Warning danach nötig)
         currentState = ChamberState.EchoChamber;
         chamber3.Activate();
-        yield return new WaitForSeconds(30f);
-        chamber3.Deactivate();
+        yield return new WaitForSeconds(chamber3Duration);
 
-        currentState = ChamberState.Done;
+                currentState = ChamberState.Done;
     }
 }
