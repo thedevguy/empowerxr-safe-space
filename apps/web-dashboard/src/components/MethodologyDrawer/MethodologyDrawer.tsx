@@ -17,7 +17,7 @@ const ENTRIES: Entry[] = [
     en: `Derived by direct division of heart rate, reflecting the well-documented physiological
 coupling between cardiac and respiratory cycles. The result is clamped to the clinically
 normal resting range of 12–30 breaths per minute.`,
-    de: `Abgeleitet durch direkte Division der Herzfrequenz, basierend auf der physiologischen
+    de: `Abgeleitet von der direkten Division der Herzfrequenz, basierend auf der physiologischen
 Kopplung zwischen Herz- und Atemrhythmus. Das Ergebnis wird auf den klinisch normalen
 Ruhewertbereich von 12–30 Atemzügen pro Minute begrenzt.`,
     formula: 'resp = clamp(HR / 4,  12,  30)',
@@ -60,7 +60,7 @@ Richtungsverzögerung simuliert die Aufbau- und Erholungsdynamik des autonomen N
 onset requires sustained exertion. The counter initialises at 0 ml and only increments
 by 0.5 ml per 500 ms tick when HR exceeds 110 bpm — a moderate-to-high exertion threshold.
 It never decreases, modelling the cumulative nature of fluid loss during physical activity.`,
-    de: `Ein Schwellenakkumulator, der die klinische Realität widerspiegelt, dass bedeutungsvoller
+    de: `Ein Schwellenakkumulator, der die klinische Realität widerspiegelt, dass relevanter
 Schweißausbruch anhaltende Anstrengung erfordert. Der Zähler beginnt bei 0 ml und
 erhöht sich nur um 0,5 ml pro 500-ms-Tick, wenn die HF 110 bpm überschreitet.
 Er nimmt nie ab und modelliert den kumulativen Charakter des Flüssigkeitsverlusts.`,
@@ -74,7 +74,7 @@ Er nimmt nie ab und modelliert den kumulativen Charakter des Flüssigkeitsverlus
 range for a healthy adult at rest. Each tick samples uniformly from 97–99%, consistent
 with the normal SpO₂ range reported by Samsung's BioActive sensor on the Galaxy Watch.`,
     de: `Modelliert als zufällige Schwankung im klinisch normalen Blutsauerstoffsättigungsbereich
-eines gesunden Erwachsenen in Ruhe. Jeder Tick sampelt gleichmäßig aus 97–99%,
+eines gesunden Erwachsenen im Ruhezustand. Jeder Tick sampelt gleichmäßig zwischen 97–99%,
 konsistent mit dem normalen SpO₂-Bereich des Samsung BioActive Sensors.`,
     formula: 'spo2 = 97 + round(random() × 2)   |   range: 97–99%',
   },
