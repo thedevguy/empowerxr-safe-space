@@ -4,19 +4,30 @@ using UnityEngine;
 
 public class ArcFlashController : MonoBehaviour
 {
+    // In Chamber2 are spawned fliockering and growing primitive shapes that orbit around the player. After the strobedealy a strobe effect is added.
+
     [Header("Lighting")]
-    public float dimDuration = 5f;      // Wie lange das Abdunkeln dauert
+    public Light DirectLight;
+    public Color ambientColor;
+    public float strobeDelay;
+    public float flashInterval = 0.1f;
 
     [Header("Shape Settings")]
     public GameObject[] primitivePrefabs;   // Sphere, Cube, etc.
     public int shapeCount = 12;
     public float orbitRadius = 3f;
-    public float orbitSpeed = 180f;         // Grad/Sekunde
-    public float flashInterval = 0.1f;
-    public float emissionIntensity = 2.5f;   // Höher = stärker selbstleuchtend
+    public float orbitSpeed = 180f;
+    public float emissionIntensity = 2.5f;
+    public float spawnInterval = 0.8f;
+
+    [Header("Shape Growth")]
+    public float startScale = 0.3f;
+    public float endScale = 1.5f;
+    public float growthDuration = 20f;
 
     [Header("Colors")]
     public Color[] neonColors;
+
 
     private List<GameObject> spawnedShapes = new();
     private Coroutine flashRoutine;
@@ -24,25 +35,15 @@ public class ArcFlashController : MonoBehaviour
 
     public void Activate()
     {
+        ambientColor = RenderSettings.ambientSkyColor;
         gameObject.SetActive(true);
-        StartCoroutine(RampAmbient(0f, dimDuration));   // Von aktuellem Wert auf 0
+
         StartCoroutine(SpawnAndOrbit());
+        StartCoroutine(GrowShapes());
         flashRoutine = StartCoroutine(FlashLoop());
+        StartCoroutine(Strobe());
     }
 
-    IEnumerator RampAmbient(float target, float duration)
-    {
-        float elapsed = 0f;
-        float start = RenderSettings.ambientIntensity;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            RenderSettings.ambientIntensity = Mathf.Lerp(start, target, elapsed / duration);
-            yield return null;
-        }
-        RenderSettings.ambientIntensity = target;
-    }
 
     IEnumerator SpawnAndOrbit()
     {
@@ -51,19 +52,39 @@ public class ArcFlashController : MonoBehaviour
             var go = Instantiate(primitivePrefabs[i % primitivePrefabs.Length], transform);
             go.AddComponent<OrbitBehavior>().Init(transform, orbitRadius, orbitSpeed, i, shapeCount);
 
-            // Neues Material anlegen — nie das shared material verändern
             var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             Color neon = neonColors[i % neonColors.Length];
 
             mat.color = neon;
             mat.EnableKeyword("_EMISSION");
-            mat.SetColor("_EmissionColor", neon * emissionIntensity);  // * intensity = HDR-Wert
+            mat.SetColor("_EmissionColor", neon * emissionIntensity);
 
             go.GetComponent<Renderer>().material = mat;
             spawnedShapes.Add(go);
+
+            yield return new WaitForSeconds(spawnInterval);
         }
-        yield break;
+
     }
+
+
+    IEnumerator GrowShapes()
+    {
+        float elapsed = 0f;
+
+        while (elapsed < growthDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / growthDuration);
+            float scale = Mathf.Lerp(startScale, endScale, t);
+
+            foreach (var s in spawnedShapes)
+                if (s != null) s.transform.localScale = Vector3.one * scale;
+
+            yield return null;
+        }
+    }
+
 
     IEnumerator FlashLoop()
     {
@@ -75,22 +96,46 @@ public class ArcFlashController : MonoBehaviour
         }
     }
 
-    public void Deactivate()
+
+    IEnumerator Strobe()
     {
-        if (flashRoutine != null) StopCoroutine(flashRoutine);
-        // Shapes bleiben — sie fliegen noch durch Chamber 3
-        // gameObject bleibt aktiv
+        yield return new WaitForSeconds(strobeDelay);
+        while (true)
+        {
+            // Blitz AN
+            DirectLight.enabled = true;
+            RenderSettings.ambientIntensity = 1f;
+            RenderSettings.ambientSkyColor = Color.white;
+
+            yield return new WaitForSeconds(flashInterval * 0.3f);
+
+            // Blitz AUS
+            DirectLight.enabled = false;
+            RenderSettings.ambientIntensity = 0f;
+            RenderSettings.ambientSkyColor = Color.black;
+
+            yield return new WaitForSeconds(flashInterval * 0.7f);
+        }
     }
 
 
-    //public void Deactivate()
-    //{
-    //    if (flashRoutine != null) StopCoroutine(flashRoutine);
-    //    foreach (var s in spawnedShapes) Destroy(s);
-    //    spawnedShapes.Clear();
-    //    gameObject.SetActive(false);
-    //}
 
+    public void Deactivate()
+    {
+        StopAllCoroutines();
+        if (flashRoutine != null) StopCoroutine(flashRoutine);
+
+        // Destroy shapes
+        foreach (var s in spawnedShapes) Destroy(s);
+        spawnedShapes.Clear();
+
+        // Reset lights
+        DirectLight.enabled = true;
+        RenderSettings.ambientIntensity = 1f;
+        RenderSettings.ambientSkyColor = ambientColor;
+
+        gameObject.SetActive(false);
+    }
 
 
 }

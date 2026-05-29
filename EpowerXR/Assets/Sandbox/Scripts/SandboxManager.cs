@@ -47,6 +47,16 @@ public class SandboxManager : MonoBehaviour
         chamber3.Activate();
         yield return new WaitForSeconds(chamber3Duration);
 
-                currentState = ChamberState.Done;
+        currentState = ChamberState.Done;
+        ResetAll();
+    }
+
+    public void ResetAll()
+    {
+        StopAllCoroutines();
+        chamber1.Deactivate();
+        chamber2.Deactivate();
+        chamber3.Deactivate();
+        warningUI.GetComponent<CanvasGroup>().alpha = 0f;
     }
 }

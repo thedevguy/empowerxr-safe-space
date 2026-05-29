@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class EchoChamberController : MonoBehaviour
 {
+    // In Chamber3 audis are added and the volumes raised and the ceiling and walls are coming nearer.
+
+
     [System.Serializable]
     public class MovingWall
     {
         public Transform wall;
-        public Vector3 targetPosition;   // Im Inspector als Weltposition eintragen
+        public Vector3 targetPosition;
         [HideInInspector] public Vector3 startPosition;
     }
 
@@ -24,6 +27,7 @@ public class EchoChamberController : MonoBehaviour
 
     private List<AudioSource> audioSources = new();
     private bool isActive;
+
 
     public void Activate()
     {
@@ -72,11 +76,12 @@ public class EchoChamberController : MonoBehaviour
             yield return null;
         }
 
-        // Sicherstellen dass alle exakt am Ziel ankommen
         if (isActive)
             foreach (var w in movingWalls)
                 w.wall.position = w.targetPosition;
     }
+
+
 
     IEnumerator RampVolume()
     {
@@ -94,23 +99,18 @@ public class EchoChamberController : MonoBehaviour
 
     public void Deactivate()
     {
+        StopAllCoroutines();
         isActive = false;
-        // Nichts zerstören, nichts zurücksetzen
-        // Experiment ist vorbei — Zustand eingefroren
+
+        // Destroy audi
+        foreach (var src in audioSources) Destroy(src.gameObject);
+        audioSources.Clear();
+
+        // Reset walls
+        foreach (var w in movingWalls)
+            if (w.wall != null) w.wall.position = w.startPosition;
+
+        gameObject.SetActive(false);
     }
-
-
-    //public void Deactivate()
-    //{
-    //    isActive = false;
-
-    //    // Wände zurücksetzen
-    //    foreach (var w in movingWalls)
-    //        if (w.wall != null) w.wall.position = w.startPosition;
-
-    //    foreach (var src in audioSources) Destroy(src.gameObject);
-    //    audioSources.Clear();
-    //    gameObject.SetActive(false);
-    //}
 
 }
