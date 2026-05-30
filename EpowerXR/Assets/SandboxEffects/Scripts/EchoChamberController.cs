@@ -7,18 +7,6 @@ public class EchoChamberController : MonoBehaviour
     // In Chamber3 audis are added and the volumes raised and the ceiling and walls are coming nearer.
 
 
-    [System.Serializable]
-    public class MovingWall
-    {
-        public Transform wall;
-        public Vector3 targetPosition;
-        [HideInInspector] public Vector3 startPosition;
-    }
-
-    [Header("Wall Closing")]
-    public MovingWall[] movingWalls;
-    public float closeDuration = 20f;
-
     [Header("Audio")]
     public AudioClip[] harshSounds;
     public int audioSourceCount = 5;
@@ -29,17 +17,9 @@ public class EchoChamberController : MonoBehaviour
     private bool isActive;
 
 
-    public void Activate()
+    private void Start()
     {
-        gameObject.SetActive(true);
-        isActive = true;
-
-        // Startpositionen einmalig merken
-        foreach (var w in movingWalls)
-            w.startPosition = w.wall.position;
-
         SpawnAudioSources();
-        StartCoroutine(CloseWalls());
         StartCoroutine(RampVolume());
     }
 
@@ -61,27 +41,6 @@ public class EchoChamberController : MonoBehaviour
         }
     }
 
-    IEnumerator CloseWalls()
-    {
-        float elapsed = 0;
-
-        while (elapsed < closeDuration && isActive)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapsed / closeDuration);
-
-            foreach (var w in movingWalls)
-                w.wall.position = Vector3.Lerp(w.startPosition, w.targetPosition, t);
-
-            yield return null;
-        }
-
-        if (isActive)
-            foreach (var w in movingWalls)
-                w.wall.position = w.targetPosition;
-    }
-
-
 
     IEnumerator RampVolume()
     {
@@ -100,17 +59,11 @@ public class EchoChamberController : MonoBehaviour
     public void Deactivate()
     {
         StopAllCoroutines();
-        isActive = false;
 
         // Destroy audi
         foreach (var src in audioSources) Destroy(src.gameObject);
         audioSources.Clear();
 
-        // Reset walls
-        foreach (var w in movingWalls)
-            if (w.wall != null) w.wall.position = w.startPosition;
-
-        gameObject.SetActive(false);
     }
 
 }

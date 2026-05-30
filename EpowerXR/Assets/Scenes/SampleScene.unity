@@ -1517,6 +1517,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1793022859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &828568061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 828568062}
+  m_Layer: 0
+  m_Name: SandboxEffects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &828568062
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828568061}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 894806491}
+  - {fileID: 1997428136}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1581,6 +1614,73 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VignetteController
   biometricReceiver: {fileID: 1927185204}
   volume: {fileID: 832575518}
+--- !u!1 &894806490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 894806491}
+  - component: {fileID: 894806492}
+  m_Layer: 0
+  m_Name: ArcFlashController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &894806491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894806490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 828568062}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &894806492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894806490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 004889da88e884a45ac6e89a63c178d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcFlashController
+  DirectLight: {fileID: 410087040}
+  ambientColor: {r: 0, g: 0, b: 0, a: 0}
+  strobeDelay: 30
+  flashInterval: 0.1
+  primitivePrefabs:
+  - {fileID: 7000921991103310670, guid: 0651d94e6cb915048993783368b901ea, type: 3}
+  - {fileID: 4709859395868857632, guid: 44aff009de9889f488c9ebaf5904a3b1, type: 3}
+  - {fileID: 1093924968456041323, guid: 535d3f2fd16bf59449500b57c30adca7, type: 3}
+  - {fileID: 5962900428589788629, guid: efdc2fe13bfd64f4bba779b08b9e42ea, type: 3}
+  shapeCount: 6
+  orbitRadius: 3
+  orbitSpeed: 180
+  emissionIntensity: 2.5
+  spawnInterval: 0.8
+  startScale: 0.3
+  endScale: 1.5
+  growthDuration: 20
+  neonColors:
+  - {r: 1, g: 0.5142826, b: 0.2028302, a: 1}
+  - {r: 0, g: 1, b: 0.563974, a: 1}
+  - {r: 1, g: 0.08018869, b: 0.8771382, a: 1}
+  - {r: 0.2971698, g: 0.5367164, b: 1, a: 1}
+  - {r: 0.8590162, g: 1, b: 0, a: 1}
 --- !u!1 &963322600
 GameObject:
   m_ObjectHideFlags: 0
@@ -4062,6 +4162,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BiometricDebugUI
   biometricReceiver: {fileID: 1927185204}
   debugText: {fileID: 343605526}
+--- !u!1 &1997428135
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1997428136}
+  - component: {fileID: 1997428137}
+  m_Layer: 0
+  m_Name: EchoChamberController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1997428136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997428135}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 828568062}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1997428137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997428135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d737b48a98c04f643aaed099ddfcfd05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EchoChamberController
+  harshSounds:
+  - {fileID: 8300000, guid: 5822ecdf8dc6f154d88511a513dfbca9, type: 3}
+  - {fileID: 8300000, guid: c2b43604b3cd39043a2c04ef5f46f836, type: 3}
+  - {fileID: 8300000, guid: 1dc3874471f7c444bb10cff3f3406bb6, type: 3}
+  audioSourceCount: 3
+  maxVolume: 1
+  volumeRampDuration: 20
 --- !u!1 &2093871621
 GameObject:
   m_ObjectHideFlags: 0
@@ -4305,3 +4456,4 @@ SceneRoots:
   - {fileID: 1841184090}
   - {fileID: 1404220136}
   - {fileID: 1324401265}
+  - {fileID: 828568062}

@@ -33,10 +33,10 @@ public class ArcFlashController : MonoBehaviour
     private Coroutine flashRoutine;
 
 
-    public void Activate()
+
+    private void Start()
     {
-        ambientColor = RenderSettings.ambientSkyColor;
-        gameObject.SetActive(true);
+                ambientColor = RenderSettings.ambientSkyColor;
 
         StartCoroutine(SpawnAndOrbit());
         StartCoroutine(GrowShapes());
@@ -44,6 +44,7 @@ public class ArcFlashController : MonoBehaviour
         StartCoroutine(Strobe());
     }
 
+    
 
     IEnumerator SpawnAndOrbit()
     {
