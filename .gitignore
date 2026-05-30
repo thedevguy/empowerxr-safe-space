@@ -109,3 +109,12 @@ release/
 
 # Google Services (may contain API keys)
 google-services.json
+
+# ============================================================
+# Node.js (apps/udp-relay, apps/web-dashboard)
+# ============================================================
+node_modules/
+dist/
+logs/
+.env
+.env.local

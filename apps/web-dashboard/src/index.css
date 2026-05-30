@@ -1,0 +1,28 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-base:       #0a0a0a;
+  --bg-surface:    #111111;
+  --border:        #2a2a2a;
+  --text-primary:  #ffffff;
+  --text-secondary:#a1a1aa;
+  --text-muted:    #71717a;
+  --status-normal: #4ade80;
+  --status-high:   #fb923c;
+  --status-low:    #facc15;
+  --status-unknown:#52525b;
+
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', ui-sans-serif, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
