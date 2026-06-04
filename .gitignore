@@ -10,6 +10,15 @@
 **/[Ll]ogs/
 **/[Uu]ser[Ss]ettings/
 
+# Unity crash auto-save snapshots (not source — regenerated on crash)
+**/[_]Recovery/
+
+# Native (CMake/Ninja) build temp produced by the Android/OpenXR toolchain
+**/.utmp/
+
+# Binary archives must never be committed (extract assets instead)
+*.rar
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 **/[Mm]emoryCaptures/
