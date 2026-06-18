@@ -8,11 +8,21 @@ public class SafeSpaceStateMachine : MonoBehaviour
     [SerializeField] private GameObject puppiesEnvironment;
     public enum InterventionMode { ARPassthrough, SwapObjects }
     [SerializeField] private InterventionMode interventionMode = InterventionMode.ARPassthrough;
+    public enum TriggerMode { HeartRateThreshold, TimerCountdown }
+    [SerializeField] private TriggerMode triggerMode = TriggerMode.HeartRateThreshold;
     [SerializeField] private GameObject[] objectsToActivate;
     [SerializeField] private GameObject[] objectsToDeactivate;
 
     private bool isUserOverwhelmed = false;
     [SerializeField] private float heartRateThreshold = 77f;
+    [SerializeField] private float countdownDuration = 30f;
+    private float countdownTimer = 0f;
+    private Material originalSkybox;
+
+    private void Awake()
+    {
+        originalSkybox = RenderSettings.skybox;
+    }
 
     void Update()
     {
@@ -23,7 +33,19 @@ public class SafeSpaceStateMachine : MonoBehaviour
     {
         if (!isUserOverwhelmed)
         {
-            if (biometricReceiver.heartRate > heartRateThreshold || biometricReceiver.stressLevel > 70f)
+            bool shouldTrigger = false;
+
+            if (triggerMode == TriggerMode.HeartRateThreshold)
+            {
+                shouldTrigger = (biometricReceiver.heartRate > heartRateThreshold || biometricReceiver.stressLevel > 70f);
+            }
+            else if (triggerMode == TriggerMode.TimerCountdown)
+            {
+                countdownTimer += Time.deltaTime;
+                shouldTrigger = (countdownTimer >= countdownDuration);
+            }
+
+            if (shouldTrigger)
             {
                 isUserOverwhelmed = true;
                 TriggerIntervention();
@@ -31,11 +53,25 @@ public class SafeSpaceStateMachine : MonoBehaviour
         }
         else
         {
-            // Return to normal when values drop back down
-            if (biometricReceiver.heartRate < heartRateThreshold && biometricReceiver.stressLevel < 50f)
+            bool shouldResume = false;
+
+            if (triggerMode == TriggerMode.HeartRateThreshold)
+            {
+                shouldResume = (biometricReceiver.heartRate < heartRateThreshold && biometricReceiver.stressLevel < 50f);
+            }
+            else if (triggerMode == TriggerMode.TimerCountdown)
+            {
+                shouldResume = (countdownTimer <= 0f);
+                if (!shouldResume)
+                    countdownTimer -= Time.deltaTime;
+            }
+
+            if (shouldResume)
             {
                 isUserOverwhelmed = false;
                 ResumeExperience();
+                if (triggerMode == TriggerMode.TimerCountdown)
+                    countdownTimer = 0f;
             }
         }
     }
@@ -43,6 +79,8 @@ public class SafeSpaceStateMachine : MonoBehaviour
     private void TriggerIntervention()
     {
         Debug.Log("OVERWHELMED - triggering intervention");
+        RenderSettings.skybox = null;
+
         if (interventionMode == InterventionMode.ARPassthrough)
         {
             arCameraManager.enabled = true;
@@ -50,6 +88,7 @@ public class SafeSpaceStateMachine : MonoBehaviour
         }
         else if (interventionMode == InterventionMode.SwapObjects)
         {
+            arCameraManager.enabled = true;
             if (objectsToActivate != null)
             {
                 foreach (var obj in objectsToActivate)
@@ -66,6 +105,8 @@ public class SafeSpaceStateMachine : MonoBehaviour
     private void ResumeExperience()
     {
         Debug.Log("CALM - returning to VR");
+        RenderSettings.skybox = originalSkybox;
+
         if (interventionMode == InterventionMode.ARPassthrough)
         {
             arCameraManager.enabled = false;
@@ -73,6 +114,7 @@ public class SafeSpaceStateMachine : MonoBehaviour
         }
         else if (interventionMode == InterventionMode.SwapObjects)
         {
+            arCameraManager.enabled = false;
             if (objectsToActivate != null)
             {
                 foreach (var obj in objectsToActivate)

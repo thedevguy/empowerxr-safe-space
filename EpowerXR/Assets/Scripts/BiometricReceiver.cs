@@ -9,6 +9,7 @@ public class BiometricReceiver : MonoBehaviour
     private UdpClient udpClient;
     private Thread receiveThread;
     public int port = 5000;
+    private bool isRunning = false;
 
     // All incoming biometric values
     public float heartRate = 0f;
@@ -20,21 +21,45 @@ public class BiometricReceiver : MonoBehaviour
 
     void Start()
     {
-        udpClient = new UdpClient(port);
-        receiveThread = new Thread(ReceiveData);
-        receiveThread.IsBackground = true;
-        receiveThread.Start();
-        Debug.Log("UDP Listener started on port " + port);
+        try
+        {
+            udpClient = new UdpClient(new IPEndPoint(IPAddress.Any, port));
+            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            isRunning = true;
+            receiveThread = new Thread(ReceiveData);
+            receiveThread.IsBackground = true;
+            receiveThread.Start();
+            Debug.Log("UDP Listener started on port " + port);
+        }
+        catch (SocketException ex)
+        {
+            Debug.LogError("Failed to bind UDP socket on port " + port + ": " + ex.Message);
+            isRunning = false;
+        }
     }
 
     private void ReceiveData()
     {
         IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Any, 0);
-        while (true)
+        while (isRunning && udpClient != null)
         {
-            byte[] bytes = udpClient.Receive(ref remoteEndpoint);
-            string message = Encoding.UTF8.GetString(bytes);
-            ParseMessage(message);
+            try
+            {
+                byte[] bytes = udpClient.Receive(ref remoteEndpoint);
+                string message = Encoding.UTF8.GetString(bytes);
+                ParseMessage(message);
+            }
+            catch (SocketException ex) when (isRunning == false)
+            {
+                // Socket was closed intentionally, exit gracefully
+                break;
+            }
+            catch (SocketException ex)
+            {
+                if (isRunning)
+                    Debug.LogError("UDP Receive error: " + ex.Message);
+                break;
+            }
         }
     }
 
@@ -54,8 +79,9 @@ public class BiometricReceiver : MonoBehaviour
 
     void OnDestroy()
     {
-        receiveThread?.Abort();
+        isRunning = false;
         udpClient?.Close();
+        udpClient?.Dispose();
     }
 }
 
